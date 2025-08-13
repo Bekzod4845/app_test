@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>IELTS Mock Quiz</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .quiz-container {
+      max-width: 700px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #0d6efd;
+    }
+    .question-block {
+      padding: 15px;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      background: #fdfdfd;
+      margin-bottom: 20px;
+    }
+    .question-text {
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .form-check {
+      margin-bottom: 5px;
+    }
+    .submit-btn {
+      width: 100%;
+    }
+    .timer {
+      font-size: 18px;
+      font-weight: bold;
+      color: #dc3545;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <div class="timer">⏳ Time Left: <span id="time">10:00</span></div>
+  <h2>📝 IELTS Mock Quiz</h2>
+
+  <form id="quizForm" th:action="@{/quiz/submit}" method="post">
+    <div th:each="q, iterStat : ${questions}" class="question-block">
+      <p class="question-text" th:text="${iterStat.index + 1} + '. ' + ${q.text}"></p>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" th:name="'q_' + ${q.id}" value="A" required>
+        <label class="form-check-label">
+          <strong>A)</strong> <span th:text="${q.optionA}"></span>
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" th:name="'q_' + ${q.id}" value="B">
+        <label class="form-check-label">
+          <strong>B)</strong> <span th:text="${q.optionB}"></span>
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" th:name="'q_' + ${q.id}" value="C">
+        <label class="form-check-label">
+          <strong>C)</strong> <span th:text="${q.optionC}"></span>
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" th:name="'q_' + ${q.id}" value="D">
+        <label class="form-check-label">
+          <strong>D)</strong> <span th:text="${q.optionD}"></span>
+        </label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary submit-btn">📤 Submit Answers</button>
+  </form>
+</div>
+
+<script>
+  let timeLeft = 10 * 60; // 10 minutes in seconds
+  const timerElement = document.getElementById("time");
+
+  function updateTimer() {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    timeLeft--;
+
+    if (timeLeft < 0) {
+      document.getElementById("quizForm").submit();
+    }
+  }
+
+  setInterval(updateTimer, 1000);
+</script>
+
+</body>
+</html>
